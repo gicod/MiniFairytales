@@ -28,13 +28,9 @@ PCF8575 PCF_2(pcf8575_addr_2);
 constexpr uint8_t pcf8575_addr_3 = 0x25U; // codes
 PCF8575 PCF_3(pcf8575_addr_3);
 constexpr uint8_t pcf8575_addr_4 = 0x20U; // hints gerkons
-constexpr uint32_t DELAY_HINT = 5000;
 PCF8575 PCF_4(pcf8575_addr_4);
 constexpr uint8_t pcf8575_addr_5 = 0x21U; // hints leds
 PCF8575 PCF_5(pcf8575_addr_5);
-
-constexpr char SOUND_FINISH[] = "10";
-// constexpr uint32_t DELAY_HINT = 5000;
 
 namespace stamp_ns
 {
