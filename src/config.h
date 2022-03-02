@@ -142,15 +142,38 @@ namespace digits_ns
 
 namespace coil_ns
 {
-
+    constexpr size_t COIN_PIN = 31; //+
 }
 
 namespace codes_ns
 {
     constexpr uint8_t LEDS_PINS_COUNT = 15;
     constexpr uint8_t LEDS_PINS[LEDS_PINS_COUNT] = {
-        0,14,13,12,11,10,9,8,7,6,5,4,3,2,1//+
+        1,0,14,13,12,11,10,9,8,7,6,5,4,3,2,//+
     };
+
+    constexpr size_t CODES_COUNT = 17;
+    constexpr size_t CODE_SIZE = 4;
+    const String CODES[CODES_COUNT] = {
+        "432615",
+        "536412",
+        "514632",
+        "451263",
+        "312465",
+        "352146",
+        "164532",
+        "461235",
+        "254136",
+        "134562",
+        "523614",
+        "154623",
+        "215436",
+        "652314",
+        "634215",
+        "561324",
+        "145236",   
+    };
+
 }
 
         // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15//test pins
