@@ -1,5 +1,6 @@
 #pragma once
 #include "common.h"
+#include "../lib/data/Code.h"
 
 enum
 {
@@ -9,6 +10,7 @@ enum
 } codes_stage;
 
 SimpleLed *ledsCodes[codes_ns::LEDS_PINS_COUNT];
+Codes *codes;
 
 Timer *t_70;
 Timer *t_71;
@@ -35,26 +37,48 @@ void codes_onFinish()
     strcpy(props_states[CODES_STATE_POS], MQTT_STRSTATUS_FINISHED);
 }
 
+void code_onCorrect(int index)
+{
+    *console << "code_onCorrect: " << index;
+    static bool leds_state[codes_ns::LEDS_PINS_COUNT] = {};
+    static size_t count = 0;
+
+    if (!leds_state[index])
+    {
+        leds_state[index] = true;
+        count++;
+    }
+    
+    if (count < codes_ns::LEDS_PINS_COUNT)
+    {
+        ledsCodes[count]->on();
+    }
+    ledsNumbers->clear();
+    *console << "\tcount: " << count << endl;
+}
+
 void gerkonsCodes_onActivated(int index)
 {
     if (codes_stage != CODES_STAGE_GAME)
         return;
-    *console << "gerkonsCodes_onActivated: " << index << endl;
+    // *console << "gerkonsCodes_onActivated: " << index << endl;
 
-    //debug
-    static int i = 0;
-    *console << "i = " << i << endl;
-    ledsCodes[i]->on();
-    delay(500);
-    ledsCodes[i]->off();
-    i++;
-    if (i == codes_ns::LEDS_PINS_COUNT)
+    mqtt_manager->publish("/er/music/play", "21");
+    ledsNumbers->set(index, WHITE);
+
+    char index_str[8] = {""};
+    itoa(index + 1, index_str, 10);
+    int tmp = codes->checkIsCorrect(index_str);
+    *console << "code number: " << index_str << endl;// << "\tcheckIsCorrect: " << tmp << endl;
+    if (tmp == -1)
+        return;
+    if (tmp == -2)
     {
-        i = 0;
-        // for (size_t i = 0; i < codes_ns::LEDS_PINS_COUNT; i++)
-        //     ledsCodes[i]->off();
+        *console << "code fail" << endl;
+        ledsNumbers->clear();
+        return;
     }
-    
+    code_onCorrect(tmp);
 }
 
 void codes_init()
@@ -64,6 +88,8 @@ void codes_init()
 
     for (size_t i = 0; i < codes_ns::LEDS_PINS_COUNT; i++)
         ledsCodes[i]->off();
+        
+    codes = new Codes(codes_ns::CODES_COUNT, codes_ns::CODES);
     
     t_70 = new Timer();
     t_71 = new Timer();
@@ -80,6 +106,7 @@ void codes_init()
     strcpy(props_states[CODES_STATE_POS], MQTT_STRSTATUS_READY);
 
     ///debug
+    codes_onActivate();
 }
 
 void codes_routine()
