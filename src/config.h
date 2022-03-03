@@ -32,6 +32,9 @@ PCF8575 PCF_4(pcf8575_addr_4);
 constexpr uint8_t pcf8575_addr_5 = 0x21U; // hints leds
 PCF8575 PCF_5(pcf8575_addr_5);
 
+constexpr uint32_t DELAY_1_SEC = 1000;
+constexpr uint32_t DELAY_2_SEC = 1000;
+
 namespace stamp_ns
 {
     constexpr char SOUND_HINT[] = "1";
@@ -147,13 +150,29 @@ namespace coil_ns
 
 namespace codes_ns
 {
+    constexpr char SOUND_GERKON[] = "21";
+    constexpr char SOUND_FAIL[] = "22";
+    constexpr char SOUND_CORRECT[] = "23";
+    constexpr char SOUND_FINISH[] = "24";
+    constexpr char SOUND_FAIL_16_PAS[] = "50";
+    constexpr char SOUND_FAIL_17_PAS[] = "51";
+    
+    constexpr uint32_t DELAY_LEDS_ON = 1000;
+    constexpr uint32_t DELAY_LEDS_OFF = 2000;
+    constexpr uint32_t DELAY_LEDS_NEXT_SHOW = 5000;
+    constexpr size_t DIGITS_SHOW_COUNT = 4;
+    constexpr size_t DIGITS_SHOW[DIGITS_SHOW_COUNT] = {4,1,5,2};
+
     constexpr uint8_t LEDS_PINS_COUNT = 15;
     constexpr uint8_t LEDS_PINS[LEDS_PINS_COUNT] = {
         1,0,14,13,12,11,10,9,8,7,6,5,4,3,2,//+
     };
 
-    constexpr size_t CODES_COUNT = 17;
-    constexpr size_t CODE_SIZE = 4;
+    constexpr size_t CORRECT_CODES_COUNT[COMPLEXITY_COUNT] = {
+        12,15
+    };
+
+    constexpr size_t CODES_COUNT = 15;
     const String CODES[CODES_COUNT] = {
         "432615",
         "536412",
@@ -169,14 +188,31 @@ namespace codes_ns
         "154623",
         "215436",
         "652314",
-        "634215",
-        "561324",
-        "145236",   
+        "634215", 
+    };
+
+    constexpr size_t CODES_FAIL_COUNT = 6;
+    const String CODE_16 = "561324";
+    const String CODES_16_FAILS[CODES_FAIL_COUNT] = {
+        "651324", 
+        "563124", 
+        "561342", 
+        "651342", 
+        "653124", 
+        "653142",
+    };
+    const String CODE_17 = "145236";
+    const String CODES_17_FAILS[CODES_FAIL_COUNT] = {
+        "415236", 
+        "142536", 
+        "145263", 
+        "412536", 
+        "415263", 
+        "412563",
     };
 
 }
 
-        // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15//test pins
 namespace hints_ns
 {
     constexpr uint8_t GERKONS_HINTS_PINS_COUNT = 6;
