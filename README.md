@@ -54,6 +54,9 @@
 > rainbow end
 ---
 # цветные кольца / color_rings:
+- картинка логики
+![](./doc/color_ring_old.jpg)
+- текущая картинка
 ![](./doc/color_rings.jpg)
 - №: 40 (Все на одной плате)
 - IP: 192.168.10.51

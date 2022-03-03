@@ -123,6 +123,31 @@ namespace color_rings_ns
     constexpr uint8_t LSTRIPS_PIN = 25;//+
     constexpr uint8_t LSTRIPS_COUNT = 24;
     constexpr EOrder RGB_ORDER = GRB;
+    constexpr size_t SEGMENT_COUNT = 24;
+    
+    constexpr size_t CIRCLE_COUNT = 6;
+    constexpr Color COLORS_CIRCLE[CIRCLE_COUNT] = {
+        BLUE, RED, YELLOW, GREEN, ORANGE, PURPLE
+    };
+    
+    constexpr Color COLORS_START[SEGMENT_COUNT] = {
+        PURPLE, ORANGE, ORANGE,//<-
+        GREEN, BLUE, PURPLE, RED, GREEN, YELLOW, BLUE,//->
+        GREEN, BLUE, YELLOW,//<-
+        PURPLE, GREEN, YELLOW, ORANGE, RED,//->
+        BLUE, RED,//<-
+        YELLOW, PURPLE, YELLOW,//->
+        BLUE//<-
+    };
+    constexpr Color COLORS_COMBO[SEGMENT_COUNT] = {
+        YELLOW, RED, BLUE,
+        BLUE, BLUE, BLUE, RED, YELLOW, YELLOW, YELLOW,
+        YELLOW, RED, BLUE,
+        GREEN, GREEN, GREEN, ORANGE, ORANGE,
+        ORANGE, GREEN,
+        PURPLE, PURPLE, PURPLE,
+        PURPLE    
+    };
 }
 
 namespace digits_ns

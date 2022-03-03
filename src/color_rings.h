@@ -10,6 +10,13 @@ enum
 
 ArdSensor *btnLeft, *btnRight;
 SimpleLed *ledsBtns;
+Lstrip *ledsRings;
+
+Color colors_current[color_rings_ns::SEGMENT_COUNT];
+uint8_t circle_index = 0;
+bool led_state = true;
+
+constexpr size_t CIRCLE_CENTERS[color_rings_ns::CIRCLE_COUNT] = {4,6,8,14,16,21};
 
 void color_rings_onActivate()
 {
