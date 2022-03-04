@@ -31,6 +31,10 @@ void codes_onFinish()
 {
     console->println(F("codes: onFinish"));
     mqtt_manager->publish("/er/music/play", codes_ns::SOUND_FINISH);    
+    mqtt_manager->publish("/er/coil/cmd", "finish");
+    mqtt_manager->publish("/er/color_rings/cmd", "finish");
+    mqtt_manager->publish("/er/digits/cmd", "finish");
+    mqtt_manager->publish("/er/hints/cmd", "finish");
     t_c_digitsShow->launch(1,1);
     codes_stage = CODES_STAGE_DONE;
     strcpy(props_states[CODES_STATE_POS], MQTT_STRSTATUS_FINISHED);

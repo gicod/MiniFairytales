@@ -59,11 +59,6 @@ void color_rings_onFinish()
     console->println(F("color_rings: onFinish"));
     t_cr_blink->pause();
     mqtt_manager->publish("/er/music/play", color_rings_ns::SOUND_FINISH);
-    // for (size_t i = 0; i < SEGMENT_COUNT; ++i)
-    // {
-    //     colors_current[i] = COLORS_COMBO[i];
-    //     ledsRings->set(NEW_INDEX[i], colors_current[i]);
-    // }
     ledsRings->clear();
     t_cr_delay2sec->launch(DELAY_2_SEC, 1, [](void*){
         *console << "t_cr_delay2sec_cb" << endl;
@@ -72,6 +67,22 @@ void color_rings_onFinish()
     
     color_rings_stage = COLOR_RINGS_STAGE_DONE;
     strcpy(props_states[COLOR_RINGS_STATE_POS], MQTT_STRSTATUS_FINISHED);
+}
+
+void colorRings_mc_cb(char* topic, uint8_t* payload, unsigned int len)
+{
+    // auto payload_p = reinterpret_cast<char*>(payload);
+    // payload[len] = '\0';
+
+    // if(strcmp(topic, "/er/color_rings/cmd") == 0) {
+    //     if(strcmp(topic, "stop_hint") == 0) {            
+    //         color_rings_stage = COLOR_RINGS_STAGE_DONE;
+    //         ledsRings->clear();
+    //         t_cr_delay2sec->pause();
+    //         t_cr_showRings->pause();
+    //         //!
+    //     }
+    // }
 }
 
 void check_colorCombo()
@@ -200,6 +211,7 @@ void color_rings_init()
             blink_newIndex();
         });
     ledsBtns = new SimpleLed(&PCF, color_rings_ns::LED_BTNS_PIN, HIGH);
+    ledsBtns->off();
     ledsRings = new Lstrip(color_rings_ns::LSTRIPS_PIN, color_rings_ns::LSTRIPS_COUNT, color_rings_ns::RGB_ORDER);
     ledsRings->set_segmentation(color_rings_ns::LSTRIPS_COUNT);
     

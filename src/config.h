@@ -15,7 +15,7 @@ constexpr bool UPLOAD_BOOT_INFO = true;
 constexpr uint16_t LANGUAGE_COUNT = 3U;
 uint16_t current_language = 0;
 
-constexpr uint16_t COMPLEXITY_COUNT = 2U;
+constexpr size_t COMPLEXITY_COUNT = 2U;
 enum COMPLEXITY {
     BASIC,
     ADVANCED,
@@ -268,6 +268,13 @@ namespace hints_ns
     constexpr uint8_t LEDS_PINS_COUNT = 6;
     constexpr uint8_t LEDS_PINS[LEDS_PINS_COUNT] = {
         7,6,5,4,3,2//+
+    };
+
+    constexpr size_t HINTS_COUNT = 17;
+    
+    constexpr uint32_t DELAY_HINT[LANGUAGE_COUNT][HINTS_COUNT] = {
+        {3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000},
+        {3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000, 3000},
     };
 }
 

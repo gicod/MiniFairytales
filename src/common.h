@@ -88,9 +88,13 @@ void on_er_reset()
 }
 
 void special_mc_cb(char* topic, uint8_t* payload, unsigned int len);
+void colorRings_mc_cb(char* topic, uint8_t* payload, unsigned int len);
+void hints_mc_cb(char* topic, uint8_t* payload, unsigned int len);
 void special_cbs(char* topic, uint8_t* payload, unsigned int len)
 {
   special_mc_cb(topic, payload, len);
+  colorRings_mc_cb(topic, payload, len);
+  hints_mc_cb(topic, payload, len);
 }
 
 typedef  MQTT_manager<
