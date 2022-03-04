@@ -198,18 +198,18 @@ void t_c_digitsShow_cb(void*)
     if (state)
     {
         ledsNumbers->set(codes_ns::DIGITS_SHOW[count], WHITE);
-        t_c_digitsShow->launch(DELAY_LEDS_OFF, 2);
+        t_c_digitsShow->launch(codes_ns::DELAY_LEDS_OFF, 2);
     }    
     else
     {
         count++;
-        t_c_digitsShow->launch(DELAY_LEDS_ON, 2);
+        t_c_digitsShow->launch(codes_ns::DELAY_LEDS_ON, 2);
     }
 
     if (count >= codes_ns::DIGITS_SHOW_COUNT)
     {
         count = 0;
-        t_c_digitsShow->launch(DELAY_LEDS_NEXT_SHOW, 2);
+        t_c_digitsShow->launch(codes_ns::DELAY_LEDS_NEXT_SHOW, 2);
     }
 }
 

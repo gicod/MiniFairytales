@@ -116,6 +116,12 @@ namespace rainbow_ns
 
 namespace color_rings_ns
 {
+    constexpr char SOUND_TOGGLE_INDEX[] = "18";
+    constexpr char SOUND_SWITCH_COLOR[] = "19";
+    constexpr char SOUND_FINISH[] = "20";
+
+    constexpr uint32_t DELAY_BLINK = 500;
+
     constexpr uint8_t BTN_LEFT_PIN = 8;//+
     constexpr uint8_t BTN_RIGHT_PIN = 9;//+
     constexpr uint8_t LED_BTNS_PIN = 10;//+
@@ -127,27 +133,42 @@ namespace color_rings_ns
     
     constexpr size_t CIRCLE_COUNT = 6;
     constexpr Color COLORS_CIRCLE[CIRCLE_COUNT] = {
-        BLUE, RED, YELLOW, GREEN, ORANGE, PURPLE
+        BLUE, PURPLE, YELLOW, GREEN, ORANGE, RED
     };
     
     constexpr Color COLORS_START[SEGMENT_COUNT] = {
-        PURPLE, ORANGE, ORANGE,//<-
-        GREEN, BLUE, PURPLE, RED, GREEN, YELLOW, BLUE,//->
-        GREEN, BLUE, YELLOW,//<-
-        PURPLE, GREEN, YELLOW, ORANGE, RED,//->
-        BLUE, RED,//<-
-        YELLOW, PURPLE, YELLOW,//->
-        BLUE//<-
+        ORANGE, ORANGE, RED,//<-
+        GREEN, BLUE, RED, PURPLE, GREEN, YELLOW, BLUE,//->
+        YELLOW, BLUE, GREEN,//<-
+        RED, GREEN, YELLOW, ORANGE, PURPLE,//->
+        PURPLE, BLUE,//<-
+        YELLOW, RED, YELLOW,//->
+        PURPLE//<-
     };
     constexpr Color COLORS_COMBO[SEGMENT_COUNT] = {
-        YELLOW, RED, BLUE,
-        BLUE, BLUE, BLUE, RED, YELLOW, YELLOW, YELLOW,
-        YELLOW, RED, BLUE,
+        YELLOW, PURPLE, BLUE,
+        BLUE, BLUE, PURPLE, PURPLE, YELLOW, YELLOW, YELLOW,
+        YELLOW, PURPLE, BLUE,
         GREEN, GREEN, GREEN, ORANGE, ORANGE,
         ORANGE, GREEN,
-        PURPLE, PURPLE, PURPLE,
-        PURPLE    
+        RED, RED, RED,
+        RED
     };
+
+    constexpr size_t NEW_INDEX[LSTRIPS_COUNT] = {
+        14,18,21,
+        22,20,19,17,15,12,13,
+        11,16,23,
+        5,6,7,8,10,9,4,
+        1,2,3,
+        0
+    };
+    
+    constexpr uint32_t DELAY_LEDS_ON = 1000;
+    constexpr uint32_t DELAY_LEDS_OFF = 2000;
+    constexpr uint32_t DELAY_LEDS_NEXT_SHOW = 5000;
+    constexpr size_t RINGS_SHOW_COUNT = 6;
+    constexpr size_t RINGS_SHOW[RINGS_SHOW_COUNT] = {1,3,4,5,6,2};
 }
 
 namespace digits_ns
