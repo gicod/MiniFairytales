@@ -15,71 +15,70 @@ private:
 
     size_t _count = 0;
 
-    const size_t _countMax = 6;
-    int* _indexHint;
+    size_t _countLed;
+    int* _indexHintForLed;
 public:
-    Hint(const size_t size):
+    Hint(const size_t size, const size_t countLed):
         _size(size), 
         _state(new HINT_STATE[size]), 
-        _indexHint(new int[_countMax])
+        _countLed(countLed),
+        _indexHintForLed(new int[_countLed])
     {
         for (size_t i = 0; i < _size; i++)
+        {
             _state[i] = NONE;
-        for (size_t i = 0; i < _countMax; i++)
-            _indexHint[i] = -1;
+        }
+        for (size_t i = 0; i < _countLed; i++)
+            _indexHintForLed[i] = -1;
     }
 
-    size_t getCount()
+    HINT_STATE getState(int index)
     {
-        return _count;
+        return _state[index];
     }
 
-    int getIndexLed(int index)
+    int getIndexLed(int indexHint)
     {
-        return _indexHint[index];
+        for (size_t i = 0; i < _countLed; i++)
+            if (_indexHintForLed[i] == indexHint)
+                return i;        
 
-        // for (size_t i = 0; i < _countMax; i++)
-        //     if (_indexHint[i] == index)
-        //         return i;        
-
-        // return -1;
+        return -1;
     }
 
-    size_t getIndexHint(size_t index)
+    int getIndexHint(size_t indexLed)
     {
-        return _indexHint[index];
+        return _indexHintForLed[indexLed];
     }
 
-    void newHint()
+    bool newHint()
     {
-        if (_count >= _countMax)
+        if (_count >= _countLed)
             _count = 0;
         for (size_t i = 0; i < _size; i++)
         {
             if (_state[i] == NONE)
             {
-                _state[i] = ACTIVATE;
-                _indexHint[_count] = i;
-                _count++;    
-                return;            
+                for (size_t k = _count; k < (_count + _countLed); k++)
+                {
+                    size_t count = k % _countLed;
+                    if (_indexHintForLed[count] == -1)
+                    {
+                        _indexHintForLed[count] = i;
+                        _count = count;                        
+                        _state[i] = ACTIVATE;
+                        return true;            
+                    }
+                }                
             }            
         }        
+        return false;            
     }
 
-    void isDone(size_t index)
+    void isDone(size_t indexHint)
     {
-        _state[index] = DONE;
-        
-
-        // _count = 0;
-        // for (size_t i = 0; i < _size; i++)
-        // {
-        //     if (_state[i] == ACTIVATE)
-        //     {
-        //         _indexHint[_count] = i;
-        //         _count++;
-        //     }            
-        // }
+        _state[indexHint] = DONE;
+        _indexHintForLed[getIndexLed(indexHint)] = -1;
     }
     ~Hint();
 };

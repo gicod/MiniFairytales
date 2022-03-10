@@ -13,23 +13,46 @@ ArdSensor *gerkonsHints[hints_ns::GERKONS_HINTS_PINS_COUNT];
 SimpleLed *ledsHints[hints_ns::LEDS_PINS_COUNT];
 // h_ ->hints
 Timer *t_h_showHint;
-Timer *t_81;
-Timer *t_82;
-Timer *t_83;
-Timer *t_84;
-Timer *t_85;
-Timer *t_86;
+Timer *t_h_delayLedOn;
 
 size_t hints_count = 0;
 Hint* hints;
 
+void hint_debug()
+{
+    console->print(F("led state:"));
+    for (size_t i = 0; i < hints_ns::LEDS_PINS_COUNT; i++)
+    {
+        console->print(F(" "));
+        console->print(hints->getIndexHint(i));
+    }
+    console->print(F("\thints state: "));
+    for (size_t i = 0; i < hints_ns::HINTS_COUNT; i++)
+    {
+        console->print(F(" "));
+        console->print(hints->getState(i));
+    }
+    console->println(F(""));
+}
+
 void hint_newHint()
 {
-    *console << "hint_newHint" << endl;
-    hints->newHint();
+    console->print(F("hint_newHint"));
+    if (hints->newHint())
+        console->println(F("\tnew hint"));
+    else
+    {
+        console->println(F("\tnot new hint"));
+        hint_debug();
+        return;
+    }
+
     for (size_t i = 0; i < hints_ns::LEDS_PINS_COUNT; i++)
-        if (hints->getIndexLed(i) != -1)
+        if (hints->getIndexHint(i) == -1)
+            ledsHints[i]->off();
+        else
             ledsHints[i]->on();  
+    hint_debug();
 }
 
 void hints_onActivate()
@@ -48,24 +71,37 @@ void hints_onActivate()
 void hints_onFinish()
 {
     console->println(F("hints: onFinish"));
+    for (size_t i = 0; i < hints_ns::LEDS_PINS_COUNT; ++i)
+        ledsHints[i]->off();      
+    t_h_showHint->pause();
     hints_stage = HINTS_STAGE_DONE;
     strcpy(props_states[HINTS_STATE_POS], MQTT_STRSTATUS_FINISHED);
 }
 
-void hints_mc_cb(char* topic, uint8_t* payload, unsigned int len)
+void hints_scb(char* topic, uint8_t* payload, unsigned int len)
 {
-    // char* payload_p = reinterpret_cast<char*>(payload);
-    // payload[len] = '\0';
+    char* payload_p = reinterpret_cast<char*>(payload);
+    payload[len] = '\0';
 
-    // if(strcmp(topic, "/er/hints/cmd") == 0) {
-    //     if(strcmp(topic, "stop_hint") == 0) {            
-    //         // color_rings_stage = COLOR_RINGS_STAGE_DONE;
-    //         // ledsRings->clear();
-    //         // t_cr_delay2sec->pause();
-    //         // t_cr_showRings->pause();
-    //         // //!
-    //     }
-    // }
+    if(strcmp(topic, "/er/hints/cmd") == 0) {  
+        console->print(F("/er/hints/cmd -> "));
+        console->println(payload_p);
+
+        static size_t index;
+        index = static_cast<size_t>(atoi(payload_p)) - 1;
+        if(index >= 0
+        && hints->getIndexLed(index) >= 0)
+        {
+            ledsHints[hints->getIndexLed(index)]->off(); 
+            t_h_delayLedOn->launch(DELAY_1_SEC, 1, [](void*){
+                console->println(F("t_h_delayLedOn_cb"));
+                hints->isDone(index);
+                hint_newHint();
+            });
+        }
+        else
+            console->println(F("wrong !!! incorrect message"));
+    }
 }
 
 void hints_init()
@@ -77,29 +113,29 @@ void hints_init()
             int tmp = hints->getIndexHint(i);
             if (tmp == -1)
                 return;
-            *console << "gerkonsHints_onActivated: " << i << endl;
+            console->print(F("gerkonsHints_onActivated: "));
+            console->print(i);
+            console->print(F("\t hint: "));
+            console->println(hints->getIndexHint(i));
+
             t_h_showHint->launch(hints_ns::DELAY_HINT[current_language][(size_t)tmp], 1, [](void*){
-                *console << "t_h_showHint_cb" << endl;                
+                console->println(F("t_h_showHint_cb"));
             });
 
             char tmp_c[8] ={""};
             itoa((tmp + 25), tmp_c, 10);
             mqtt_manager->publish("/er/music/play", tmp_c);
         },i);
-        ledsHints[i] = new SimpleLed(&PCF_5, hints_ns::LEDS_PINS[i], HIGH);
     }
-    for (size_t i = 0; i < hints_ns::GERKONS_HINTS_PINS_COUNT; ++i)
+    for (size_t i = 0; i < hints_ns::LEDS_PINS_COUNT; ++i)
+        ledsHints[i] = new SimpleLed(&PCF_5, hints_ns::LEDS_PINS[i], HIGH);
+    for (size_t i = 0; i < hints_ns::LEDS_PINS_COUNT; ++i)
         ledsHints[i]->off();
     
-    hints = new Hint(hints_ns::HINTS_COUNT);
+    hints = new Hint(hints_ns::HINTS_COUNT, hints_ns::LEDS_PINS_COUNT);
 
     t_h_showHint = new Timer();
-    t_81 = new Timer();
-    t_82 = new Timer();
-    t_83 = new Timer();
-    t_84 = new Timer();
-    t_85 = new Timer();
-    t_86 = new Timer();
+    t_h_delayLedOn = new Timer();
 
     hints_stage = HINTS_STAGE_NONE;
     strcpy(props_states[HINTS_STATE_POS], MQTT_STRSTATUS_READY);
@@ -108,17 +144,13 @@ void hints_init()
 void hints_routine()
 {
     t_h_showHint->routine();
-    t_81->routine();
-    t_82->routine();
-    t_83->routine();
-    t_84->routine();
-    t_85->routine();
-    t_86->routine();
+    t_h_delayLedOn->routine();
 
     if (hints_stage != HINTS_STAGE_GAME)
         return;
 
-    if (t_h_showHint->is_running())
+    if (t_h_showHint->is_running()
+    || t_h_delayLedOn->is_running())
         return;
 
     for (size_t i = 0; i < hints_ns::GERKONS_HINTS_PINS_COUNT; ++i)
