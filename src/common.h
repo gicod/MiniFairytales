@@ -88,20 +88,20 @@ void on_er_reset()
 }
 
 void special_mc_cb(char* topic, uint8_t* payload, unsigned int len);
-void colorRings_mc_cb(char* topic, uint8_t* payload, unsigned int len);
-void hints_mc_cb(char* topic, uint8_t* payload, unsigned int len);
+void colorRings_scb(char* topic, uint8_t* payload, unsigned int len);
+void hints_scb(char* topic, uint8_t* payload, unsigned int len);
 void special_cbs(char* topic, uint8_t* payload, unsigned int len)
 {
   special_mc_cb(topic, payload, len);
-  colorRings_mc_cb(topic, payload, len);
-  hints_mc_cb(topic, payload, len);
+  colorRings_scb(topic, payload, len);
+  hints_scb(topic, payload, len);
 }
 
 typedef  MQTT_manager<
   PROPS_NUM, CIRCUIT_NAME,
   propsNames, props_num_in_ERP,
   on_er_start, on_er_reset, props_cbs,
-  special_mc_cb, topics, topics_count
+  special_cbs, topics, topics_count
 > mqtt_manager_t;
 
 mqtt_manager_t *mqtt_manager;

@@ -27,7 +27,7 @@ void rainbow_onFinish()
     console->println(F("rainbow: onFinish"));
     mqtt_manager->publish("/er/music/play", rainbow_ns::SOUND_FINISH[complexity]);
     t_r_audioFinishOff->launch(rainbow_ns::DELAY_AUDIO_FINISH_OFF[complexity][current_language], 1, [](void*){
-        *console << "t_r_audioFinishOff_cb" << endl;
+        console->println(F("t_r_audioFinishOff_cb"));
         mqtt_manager->publish("/er/color_rings/cmd", "activate");
         mqtt_manager->publish("/er/digits/cmd", "activate");
         mqtt_manager->publish("/er/coil/cmd", "activate");
@@ -40,13 +40,13 @@ void rainbow_onFinish()
 
 void rainbow_onFail()
 {
-    *console << "rainbow_onFail" << endl;    
+    console->println(F("rainbow_onFail"));
     delay(1000);
     mqtt_manager->publish("/er/music/play", rainbow_ns::SOUND_FAIL);
     static bool state;
     state = false;
     t_r_blink->launch(300, 6, [](void*){
-        *console << "t_r_blink_cb" << endl;
+        console->println(F("t_r_blink_cb"));
         state = !state;
         if (state)
         {
@@ -63,10 +63,10 @@ void rainbow_onFail()
     if (count == 5)
     {
         t_r_delayHint->launch(rainbow_ns::DELAY_HINT, 1, [](void*){
-            *console << "t_r_delayHint_cb" << endl;
+            console->println(F("t_r_delayHint_cb"));
             mqtt_manager->publish("/er/music/play", "");
             t_r_audioHintOff->launch(rainbow_ns::DELAY_HINT_OFF[current_language], 1, [](void*){
-                *console << "t_r_delayHint_cb" << endl;
+                console->println(F("t_r_delayHint_cb"));
             });
         });
     }    
@@ -80,7 +80,8 @@ void gerkonsRainbow_onActivated(int index)
     || t_r_delayHint->is_running()
     || t_r_audioHintOff->is_running())
         return;
-    *console << "gerkonsRainbow_onActivated: " << index << endl;
+    console->print(F("gerkonsRainbow_onActivated: "));
+    console->println(index);
     mqtt_manager->publish("/er/music/play", rainbow_ns::SOUND_GERKON);
     ledsNumbers->set(index, rainbow_ns::COLORS[index]);
     static size_t seq[rainbow_ns::SEQ_COUNT];

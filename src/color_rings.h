@@ -61,7 +61,7 @@ void color_rings_onFinish()
     mqtt_manager->publish("/er/music/play", color_rings_ns::SOUND_FINISH);
     ledsRings->clear();
     t_cr_delay2sec->launch(DELAY_2_SEC, 1, [](void*){
-        *console << "t_cr_delay2sec_cb" << endl;
+        console->println(F("t_cr_delay2sec_cb"));
         t_cr_showRings->launch(1,1);
     });
     
@@ -69,42 +69,42 @@ void color_rings_onFinish()
     strcpy(props_states[COLOR_RINGS_STATE_POS], MQTT_STRSTATUS_FINISHED);
 }
 
-void colorRings_mc_cb(char* topic, uint8_t* payload, unsigned int len)
+void colorRings_scb(char* topic, uint8_t* payload, unsigned int len)
 {
-    // auto payload_p = reinterpret_cast<char*>(payload);
-    // payload[len] = '\0';
+    auto payload_p = reinterpret_cast<char*>(payload);
+    payload[len] = '\0';
 
-    // if(strcmp(topic, "/er/color_rings/cmd") == 0) {
-    //     if(strcmp(topic, "stop_hint") == 0) {            
-    //         color_rings_stage = COLOR_RINGS_STAGE_DONE;
-    //         ledsRings->clear();
-    //         t_cr_delay2sec->pause();
-    //         t_cr_showRings->pause();
-    //         //!
-    //     }
-    // }
+    if(strcmp(topic, "/er/color_rings/cmd") == 0) {   
+        if(strcmp(payload_p, "stop_hint") == 0) {   
+            console->print(F("/er/color_rings/cmd -> stop_hint"));
+            color_rings_stage = COLOR_RINGS_STAGE_DONE;
+            ledsRings->clear();
+            ledsBtns->off();
+            t_cr_delay2sec->pause();
+            t_cr_showRings->pause();
+        }
+    }
 }
 
 void check_colorCombo()
 {
     uint8_t counter = 0;
-    *console << F("color correct:");
+    console->print(F("color correct:"));
     for (size_t i = 0; i < color_rings_ns::SEGMENT_COUNT; ++i)
     {
         if (colors_current[i] == color_rings_ns::COLORS_COMBO[i])
         {
             counter++;
-            *console << " +";
+            console->print(F(" +"));
         }
         else
-            *console << " -";
-        // *console << colors_current[i] << "/" << COLORS_COMBO[i];
+            console->print(F(" -"));
     }
-    *console << "" << endl;
+    console->println(F(""));
     if (counter == color_rings_ns::SEGMENT_COUNT)
     {
         t_cr_delayFinish->launch(DELAY_1_SEC, 1, [](void*){
-            *console << "t_cr_delayFinish_cb" << endl;
+            console->println(F("t_cr_delayFinish_cb"));
             color_rings_onFinish();
         });
     }
@@ -207,7 +207,8 @@ void color_rings_init()
             circle_index++;
             if(circle_index >= color_rings_ns::CIRCLE_COUNT)
                 circle_index = 0;
-            *console << "circle_index: " << circle_index << endl;  
+            console->print(F("circle_index: "));
+            console->println(circle_index);
             blink_newIndex();
         });
     ledsBtns = new SimpleLed(&PCF, color_rings_ns::LED_BTNS_PIN, HIGH);

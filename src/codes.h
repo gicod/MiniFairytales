@@ -31,10 +31,10 @@ void codes_onFinish()
 {
     console->println(F("codes: onFinish"));
     mqtt_manager->publish("/er/music/play", codes_ns::SOUND_FINISH);    
-    mqtt_manager->publish("/er/coil/cmd", "finish");
-    mqtt_manager->publish("/er/color_rings/cmd", "finish");
-    mqtt_manager->publish("/er/digits/cmd", "finish");
     mqtt_manager->publish("/er/hints/cmd", "finish");
+    mqtt_manager->publish("/er/coil/cmd", "finish");
+    mqtt_manager->publish("/er/color_rings/cmd", "stop_hint");
+    mqtt_manager->publish("/er/digits/cmd", "finish");
     t_c_digitsShow->launch(1,1);
     codes_stage = CODES_STAGE_DONE;
     strcpy(props_states[CODES_STATE_POS], MQTT_STRSTATUS_FINISHED);
@@ -46,7 +46,11 @@ void code_onCorrect(int _index)
     index = _index;
     static size_t count = 0;
     count++;
-    *console << "code_onCorrect: " << index << "\tcount: " << count << endl;
+    console->print(F("code_onCorrect: "));
+    console->print(index);
+    console->print(F("\tcount: "));
+    console->println(count);
+
     ledsCodes[count]->on();
 
     static size_t blink_count;
@@ -83,7 +87,9 @@ void code_onCorrect(int _index)
 
 void codes_onFail(int _index)
 {
-    *console << "codes_onFail: " << _index << endl;
+    console->print(F("codes_onFail: "));
+    console->println(_index);
+    
     static int index;
     index = _index;
     static bool state;
@@ -99,12 +105,12 @@ void codes_onFail(int _index)
 
         if (index == -15)
             t_c_delayCodeFail->launch(DELAY_2_SEC, 1, [](void*){
-                *console << "t_c_delayCodeFail_cb" << endl;
+                console->println(F("t_c_delayCodeFail_cb"));
                 mqtt_manager->publish("/er/music/play", codes_ns::SOUND_FAIL_16_PAS);
             });
         else if (index == -16)
             t_c_delayCodeFail->launch(DELAY_2_SEC, 1, [](void*){
-                *console << "t_c_delayCodeFail_cb" << endl;
+                console->println(F("t_c_delayCodeFail_cb"));
                 mqtt_manager->publish("/er/music/play", codes_ns::SOUND_FAIL_17_PAS);
             });
     });
@@ -112,7 +118,8 @@ void codes_onFail(int _index)
 
 void codes_check(int index)
 {
-    *console << "codes_check: " << index << endl;
+    console->print(F("codes_check: "));
+    console->println(index);
     mqtt_manager->publish("/er/music/play", "21");
 
     char index_str[8] = {""};
@@ -127,7 +134,7 @@ void codes_check(int index)
         indexCode = 15;
     else if (codeState == CodeWithError::CODE_STATE::FAIL)
     {
-        *console << "code 16 fail" << endl;
+        console->println(F("code 16 fail"));
         indexCode = -15;
     }
 
@@ -136,7 +143,7 @@ void codes_check(int index)
         indexCode = 16;
     else if (codeState == CodeWithError::CODE_STATE::FAIL)
     {
-        *console << "code 17 fail" << endl;
+        console->println(F("code 17 fail"));
         indexCode = -16;
     }
         
@@ -154,7 +161,7 @@ void codes_check(int index)
     static bool codes_state[codes_ns::CODES_COUNT + 2] = {};
 
     t_c_codesCheck->launch(DELAY_1_SEC, 1, [](void*){
-        *console << "t_c_codesCheck_cb" << endl;
+        console->println(F("t_c_codesCheck_cb"));
         if (indexCode == -15
         || indexCode == -16)
         {
@@ -193,7 +200,7 @@ void gerkonsCodes_onActivated(int index)
 
 void t_c_digitsShow_cb(void*)
 {
-    *console << "t_c_digitsShow_cb" << endl;
+    console->println(F("t_c_digitsShow_cb"));
     static bool state = false;
     state = !state;
     static size_t count = 0;

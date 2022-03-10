@@ -109,8 +109,8 @@ namespace rainbow_ns
 
     constexpr size_t SEQ_COUNT = 6;
     constexpr size_t SEQ[COMPLEXITY_COUNT][SEQ_COUNT] = {
-        {0,1,2,3,4,5},
-        {5,4,3,2,1,0},
+        {4,1,3,2,0,5},
+        {4,1,3,2,0,5},
     };
 }
 
@@ -318,6 +318,7 @@ namespace devices_ns
 
 const char* topics[] = {
     "/er/gamelevel/cmd",
+    "/er/test/cmd",
 
     "/er/mc1/pause",
     "/er/mc1/resume",
@@ -328,22 +329,22 @@ const char* topics[] = {
     "/er/mc2/resume",
     "/er/mc2/vol/set",
 
-    "/er/mc3/play",
-    "/er/mc3/pause",
-    "/er/mc3/resume",
-    "/er/mc3/vol/set",
+    // "/er/mc3/play",
+    // "/er/mc3/pause",
+    // "/er/mc3/resume",
+    // "/er/mc3/vol/set",
 
     "/er/music/play",
     "/er/music/stop",
-    "/er/music/reset",
+    // "/er/music/reset",
     
     "/er/musicback/play",
 
-    "/er/hint1",
-    "/er/hint2",
+    // "/er/hint1",
+    // "/er/hint2",
     
-    "/er/autohint1",
-    "/er/autohint2",
-    "/er/autohints/enabled",
+    // "/er/autohint1",
+    // "/er/autohint2",
+    // "/er/autohints/enabled",
 };
 constexpr size_t topics_count = sizeof(topics)/sizeof(topics[0]);

@@ -27,7 +27,7 @@ void merlin_onFinish()
     console->println(F("merlin: onFinish"));
     mqtt_manager->publish("/er/music/play", merlin_ns::SOUND_FINISH);
     t_actRainbow->launch(DELAY_ACT_RAINBOW[current_language], 1, [](void*){
-        *console << "t_actRainbow_cb" << endl;
+        console->println(F("t_actRainbow_cb"));
         mqtt_manager->publish("/er/rainbow/cmd", "activate");
     });
     merlin_stage = MERLIN_STAGE_DONE;
@@ -35,15 +35,18 @@ void merlin_onFinish()
 }
 
 void onFound(uint8_t index){
-    *console << "onFound: " << index << endl;
+    console->println(F("cpz onFound"));
+    // *console << "onFound: " << index << endl;
 };
 
 void onCorrect(uint8_t index){
-    *console << "onCorrect: " << index << endl;
+    console->println(F("cpz onCorrect"));
+    // *console << "onCorrect: " << index << endl;
 };
 
 void onRemoved(uint8_t index){
-    *console << "onRemoved: " << index << endl;
+    console->println(F("cpz onRemoved"));
+    // *console << "onRemoved: " << index << endl;
 };
 
 void merlin_init()

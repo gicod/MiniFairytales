@@ -33,10 +33,10 @@ void stamp_onActivate()
 {
     console->println(F("stamp: onActivated"));
     t_s_delayActivate2->launch(stamp_ns::DELAY_ACTIVATE_2, 1, [](void*){
-        *console << "t_s_delayActivate2_cb" << endl;
+        console->println(F("t_s_delayActivate2_cb"));
         mqtt_manager->publish("/er/music/play", stamp_ns::SOUND_HINT);
         t_s_audioHintOff->launch(stamp_ns::DELAY_AUDIO_HINT_OFF[current_language], 1, [](void*){
-            *console << "t_s_audioHintOff_cb" << endl;
+            console->println(F("t_s_audioHintOff_cb"));
             stamp_stage = STAMP_STAGE_FIRST_GERKON;
         });
     });
@@ -48,7 +48,7 @@ void stamp_onFinish()
     console->println(F("stamp: onFinish"));
     mqtt_manager->publish("/er/music/play", stamp_ns::SOUND_FINISH);
     t_s_delayFinish3->launch(stamp_ns::DELAY_FINISH_3[current_language], 1, [](void*){
-        *console << "t_s_delayFinish3_cb" << endl;
+        console->println(F("t_s_delayFinish3_cb"));
         mqtt_manager->publish("/er/merlin/cmd", "activate");
     });
     stamp_stage = STAMP_STAGE_DONE;
@@ -81,12 +81,12 @@ bool rotation_isCorrect(int index)
 
 void stamp_onCorrect(int index)
 {
-    *console << "stamp_onCorrect" << endl;
+    console->println(F("stamp_onCorrect"));
     s_count++;
     if (s_count == SEQ_STAMP_COUNT)
     {
         t_s_delayFinish2->launch(stamp_ns::DELAY_FINISH_2, 1, [](void*){
-            *console << "t_s_delayFinish2_cb" << endl;
+            console->println(F("t_s_delayFinish2_cb"));
             stamp_onFinish();
         });
     }
@@ -94,7 +94,7 @@ void stamp_onCorrect(int index)
 
 void stamp_onFail()
 {
-    *console << "stamp_onFail" << endl;
+    console->println(F("stamp_onFail"));
     s_count = 0;
     mqtt_manager->publish("/er/music/play", stamp_ns::SOUND_FAIL);
 }
@@ -109,14 +109,15 @@ void stamp_init()
             {
                 s_last_gerkon = i;
                 stamp_stage = STAMP_STAGE_GAME;
-                *console << "STAMP_STAGE_GAME" << endl;
+                console->println(F("STAMP_STAGE_GAME"));
                 mqtt_manager->publish("/er/music/play", stamp_ns::SOUND_FIRST_GERKON);
                 return;
             }
 
             if (i == s_last_gerkon)
                 return;
-            *console << "gerkonsStamp_onActivated: " << i;// << endl; 
+            console->print(F("gerkonsStamp_onActivated: "));
+            console->print(i);
 
             ///debug
             // char tmp[8] ={""};
