@@ -73,7 +73,7 @@ void code_onCorrect(int _index)
             if (index == 2)
                 mqtt_manager->publish("/er/coil/cmd", "finish");
             else if (index == 9)
-                mqtt_manager->publish("/er/color_rings/cmd", "finish");
+                mqtt_manager->publish("/er/color_rings/cmd", "stop_hint");
             else if (index == 14)
                 mqtt_manager->publish("/er/digits/cmd", "finish");
         }
@@ -244,9 +244,6 @@ void codes_init()
 
     codes_stage = CODES_STAGE_NONE;
     strcpy(props_states[CODES_STATE_POS], MQTT_STRSTATUS_READY);
-
-    ///debug
-    // codes_onActivate();
 }
 
 void codes_routine()

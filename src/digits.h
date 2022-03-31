@@ -13,7 +13,6 @@ enum
 Lstrip *ledsDigits;
 Timer *t_digitsShow;
 
-void t_digitsShow_cb(void*);
 void digits_onActivate()
 {
     console->println(F("digits: onActivated"));
@@ -25,6 +24,7 @@ void digits_onActivate()
 void digits_onFinish()
 {
     console->println(F("digits: onFinish"));
+    ledsDigits->clear();
     t_digitsShow->pause();
     digits_stage = DIGITS_STAGE_DONE;
     strcpy(props_states[DIGITS_STATE_POS], MQTT_STRSTATUS_FINISHED);

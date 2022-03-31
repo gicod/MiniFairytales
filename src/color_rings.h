@@ -12,7 +12,7 @@ ArdSensor *btnLeft, *btnRight;
 SimpleLed *ledsBtns;
 Lstrip *ledsRings;
 
-//cr_ ->color_rings
+//cr_ -> color_rings
 Timer *t_cr_blink;
 Timer *t_cr_delayFinish;
 Timer *t_cr_delay2sec;
@@ -31,7 +31,7 @@ void blink_newIndex()
 
     led_state = true;
     t_cr_blink->launch(color_rings_ns::DELAY_BLINK, Timer::TIMER_LOOP, [](void*){
-        // *console << "t_blink_cb" << endl;
+        // *console << "t_cr_blink_cb" << endl;
         led_state = !led_state;
         if(led_state)
             ledsRings->set(color_rings_ns::NEW_INDEX[CIRCLE_CENTERS[circle_index]], color_rings_ns::COLORS_CIRCLE[circle_index]);
@@ -80,6 +80,7 @@ void colorRings_scb(char* topic, uint8_t* payload, unsigned int len)
             color_rings_stage = COLOR_RINGS_STAGE_DONE;
             ledsRings->clear();
             ledsBtns->off();
+            t_cr_blink->pause();
             t_cr_delay2sec->pause();
             t_cr_showRings->pause();
         }
@@ -174,8 +175,7 @@ void t_cr_showRings_cb(void*)
         
     if (state)
     {
-        for (size_t i = 0; i < color_rings_ns::RINGS_SHOW[count]; i++)
-            ledsRings->set(color_rings_ns::NEW_INDEX[CIRCLE_CENTERS[i]], GREEN);
+        ledsRings->set(color_rings_ns::NEW_INDEX[CIRCLE_CENTERS[color_rings_ns::RINGS_SHOW[count]]], GREEN);
         t_cr_showRings->launch(color_rings_ns::DELAY_LEDS_OFF, 2);
     }    
     else
@@ -223,9 +223,6 @@ void color_rings_init()
 
     color_rings_stage = COLOR_RINGS_STAGE_NONE;
     strcpy(props_states[COLOR_RINGS_STATE_POS], MQTT_STRSTATUS_READY);
-
-    ///debug
-    // color_rings_onActivate();
 }
 
 void color_rings_routine()

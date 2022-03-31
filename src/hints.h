@@ -89,10 +89,11 @@ void hints_scb(char* topic, uint8_t* payload, unsigned int len)
 
         static size_t index;
         index = static_cast<size_t>(atoi(payload_p)) - 1;
-        if(index >= 0
-        && hints->getIndexLed(index) >= 0)
+
+        if(index >= 0)
         {
-            ledsHints[hints->getIndexLed(index)]->off(); 
+            if(hints->getIndexLed(index) >= 0)
+                ledsHints[hints->getIndexLed(index)]->off(); 
             t_h_delayLedOn->launch(DELAY_1_SEC, 1, [](void*){
                 console->println(F("t_h_delayLedOn_cb"));
                 hints->isDone(index);

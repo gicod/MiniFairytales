@@ -25,8 +25,11 @@ void rainbow_onActivate()
 void rainbow_onFinish()
 {
     console->println(F("rainbow: onFinish"));
+    ledsNumbers->set(PURPLE);
     mqtt_manager->publish("/er/music/play", rainbow_ns::SOUND_FINISH[complexity]);
     t_r_audioFinishOff->launch(rainbow_ns::DELAY_AUDIO_FINISH_OFF[complexity][current_language], 1, [](void*){
+        mqtt_manager->publish("/er/musicback/play", "2");
+        ledsNumbers->clear();
         console->println(F("t_r_audioFinishOff_cb"));
         mqtt_manager->publish("/er/color_rings/cmd", "activate");
         mqtt_manager->publish("/er/digits/cmd", "activate");
@@ -64,7 +67,7 @@ void rainbow_onFail()
     {
         t_r_delayHint->launch(rainbow_ns::DELAY_HINT, 1, [](void*){
             console->println(F("t_r_delayHint_cb"));
-            mqtt_manager->publish("/er/music/play", "");
+            mqtt_manager->publish("/er/music/play", rainbow_ns::SOUND_HINT);
             t_r_audioHintOff->launch(rainbow_ns::DELAY_HINT_OFF[current_language], 1, [](void*){
                 console->println(F("t_r_delayHint_cb"));
             });

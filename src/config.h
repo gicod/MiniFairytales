@@ -168,7 +168,8 @@ namespace color_rings_ns
     constexpr uint32_t DELAY_LEDS_OFF = 2000;
     constexpr uint32_t DELAY_LEDS_NEXT_SHOW = 5000;
     constexpr size_t RINGS_SHOW_COUNT = 6;
-    constexpr size_t RINGS_SHOW[RINGS_SHOW_COUNT] = {1,3,4,5,6,2};
+    // constexpr size_t RINGS_SHOW[RINGS_SHOW_COUNT] = {1,3,4,5,6,2};
+    constexpr size_t RINGS_SHOW[RINGS_SHOW_COUNT] = {0,2,3,4,5,1}; //psw 134562 
 }
 
 namespace digits_ns
@@ -284,8 +285,8 @@ namespace mc_ns
     constexpr uint8_t LAST_LANGUAGE_IND = 5U;    
     uint16_t current_language_mc = 1U;
 
-    constexpr uint8_t START_BUTTON = 36; //+
-    constexpr uint8_t RESET_BUTTON = 34; //+
+    constexpr uint8_t BTN_START_PIN = 36; //+
+    constexpr uint8_t BTN_RESET_PIN = 34; //+
 
     namespace back_music_space {
         HardwareSerial *hwserial = &Serial3;//+
@@ -298,7 +299,7 @@ namespace mc_ns
         uint8_t folder = 2U; // the start folder 
         uint8_t volume = 80U;
         bool AUTOHINTS_ENABLED = true;
-        constexpr uint8_t MAKE_SURE_COUNT = 3U;
+        constexpr uint8_t MAKE_SURE_COUNT = 1;//! 3U;
     }
 }
 

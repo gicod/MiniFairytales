@@ -5,6 +5,9 @@
 
 using namespace mc_ns;
 
+ArdSensor* btnStart;
+ArdSensor* btnReset;
+
 MP3_player<>* back_mc, *action_mc;
 Timer *general_info_publisher;
 
@@ -254,6 +257,17 @@ char* sound_list_item_info(int id, const char *strName)
 
 void mc_init()
 {
+    btnStart = new ArdSensor(mc_ns::BTN_START_PIN, LOW, 50);
+        btnStart->setCallbackOnActivated([](){
+            // *console << "btnStart_onActivated" << endl;
+            mqtt_manager->publish("/er/cmd", "start");
+        });
+    btnReset = new ArdSensor(mc_ns::BTN_RESET_PIN, LOW, 50);
+        btnReset->setCallbackOnActivated([](){
+            // *console << "btnReset_onActivated" << endl;
+            mqtt_manager->publish("/er/cmd", "reset");
+        });
+
     static constexpr unsigned long mqtt_heart_beat_offset = 1000UL;
     back_mc = new MP3_player<>
         (back_music_space::hwserial, back_music_space::folder, back_music_space::volume);
@@ -272,6 +286,9 @@ void mc_init()
 
 void mc_routine()
 {
+    btnStart->check();
+    btnReset->check();
+
     static bool is_welcoming_played = false;
     if (!is_welcoming_played && mqtt_manager->is_connected()) {
         action_mc->play(1, 1); // play "welcome on board, capitan..."

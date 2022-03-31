@@ -7,7 +7,9 @@
 enum {STAMP_STATE_POS, MERLIN_STATE_POS, RAINBOW_STATE_POS, COLOR_RINGS_STATE_POS, DIGITS_STATE_POS, COIL_STATE_POS, CODES_STATE_POS, HINTS_STATE_POS, MC_STATE_POS};
 
 constexpr size_t PROPS_NUM = 9U;
-constexpr int props_num_in_ERP[PROPS_NUM] = {10, 20, 30, 40, 50, 60, 70, 80, 90};
+constexpr int props_num_in_ERP[PROPS_NUM] = {
+  10, 20, 30, 40, ds_MQTT::NOT_SHOW, ds_MQTT::NOT_SHOW, 50, ds_MQTT::NOT_SHOW, ds_MQTT::NOT_SHOW
+};
 
 constexpr char PROP_1_STRID[]  = "stamp";
 constexpr char PROP_2_STRID[]  = "merlin";
@@ -15,7 +17,7 @@ constexpr char PROP_3_STRID[]  = "rainbow";
 constexpr char PROP_4_STRID[]  = "color_rings";
 constexpr char PROP_5_STRID[]  = "digits";
 constexpr char PROP_6_STRID[]  = "coil";
-constexpr char PROP_7_STRID[]  = "codes";
+constexpr char PROP_7_STRID[]  = "codes"; // 50
 constexpr char PROP_8_STRID[]  = "hints";
 constexpr char PROP_9_STRID[]  = "mc";
 const char *propsNames[PROPS_NUM] = {PROP_1_STRID, PROP_2_STRID, PROP_3_STRID, PROP_4_STRID, PROP_5_STRID, PROP_6_STRID, PROP_7_STRID, PROP_8_STRID, PROP_9_STRID};
